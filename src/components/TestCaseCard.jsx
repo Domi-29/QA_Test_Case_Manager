@@ -1,104 +1,66 @@
-function TestCaseCard({ testCase, onUpdateStatus, onDelete }) {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Passed":
-        return "green";
-      case "Failed":
-        return "red";
-      case "Blocked":
-        return "orange";
-      default:
-        return "gray";
-    }
-  };
+// TestCaseCard.jsx
+import React from "react";
+import { STATUS_COLORS } from "../utils/constants";
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case "High":
-        return "red";
-      case "Medium":
-        return "orange";
-      default:
-        return "green";
-    }
-  };
-
+// Memoizujeme komponent, aby sa rerenderovala len ak sa zmení testCase
+const TestCaseCard = React.memo(({ testCase }) => {
   return (
-    <div
-      style={{
-        border: "1px solid #ddd",
-        padding: "15px",
-        marginBottom: "10px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
-      }}
-    >
-      <h3>{testCase.title}</h3>
-
-      <p>
+    <div style={cardStyle}>
+      <div style={headerStyle}>
+        <h3 style={titleStyle}>{testCase.title}</h3>
         <span
           style={{
-            color: "white",
-            backgroundColor: getPriorityColor(testCase.priority),
-            padding: "3px 8px",
-            borderRadius: "5px",
-            marginRight: "8px",
-          }}
-        >
-          {testCase.priority}
-        </span>
-
-        <span
-          style={{
-            color: "white",
-            backgroundColor: getStatusColor(testCase.status),
-            padding: "3px 8px",
-            borderRadius: "5px",
+            ...statusBadgeStyle,
+            backgroundColor: STATUS_COLORS[testCase.status],
           }}
         >
           {testCase.status}
         </span>
-      </p>
-
-      <div style={{ marginTop: "10px" }}>
-        <label>Status: </label>
-        <select
-          value={testCase.status}
-          onChange={(e) => onUpdateStatus(testCase.id, e.target.value)}
-        >
-          <option value="Not Run">Not Run</option>
-          <option value="Passed">Passed</option>
-          <option value="Failed">Failed</option>
-          <option value="Blocked">Blocked</option>
-        </select>
       </div>
-
-      <button
-        onClick={() => {
-          const confirmed = window.confirm(
-            "Are you sure you want to delete this test case?",
-          );
-
-          if (confirmed) {
-            onDelete(testCase.id);
-          }
-        }}
-        style={{
-          marginTop: "10px",
-          backgroundColor: "black",
-          color: "white",
-          padding: "5px 10px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Delete
-      </button>
-
-      <small>Created: {testCase.createdAt}</small>
+      <p style={descriptionStyle}>{testCase.description || "No description"}</p>
     </div>
   );
-}
+});
+
+// -----------------------------
+// Styles (clean, chapel style)
+// -----------------------------
+const cardStyle = {
+  padding: "12px 16px",
+  margin: "8px 0",
+  borderRadius: "12px",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+  backgroundColor: "#fff",
+  border: "1px solid #e0e0e0",
+  transition: "transform 0.1s ease-in-out",
+};
+
+const headerStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: "6px",
+};
+
+const titleStyle = {
+  margin: 0,
+  fontSize: "1.1rem",
+  color: "#333",
+  fontWeight: "600",
+};
+
+const statusBadgeStyle = {
+  color: "white",
+  padding: "4px 10px",
+  borderRadius: "999px",
+  fontSize: "0.85rem",
+  textTransform: "capitalize",
+};
+
+const descriptionStyle = {
+  margin: 0,
+  fontSize: "0.9rem",
+  color: "#666",
+};
 
 export default TestCaseCard;

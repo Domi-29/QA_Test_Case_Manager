@@ -1,80 +1,103 @@
-import { useState } from "react";
-import TestCaseCard from "../components/TestCaseCard";
-import { useTestCases } from "../context/TestCaseContext";
+import { useMemo } from "react";
+import { useTestCaseContext } from "../context/TestCaseContext";
+import { TEST_CASE_STATUS, STATUS_COLORS } from "../utils/constants";
 
 function Home() {
-  const { testCases, updateStatus, deleteTestCase } = useTestCases();
+  const { testCases, updateTestCase, deleteTestCase } = useTestCaseContext();
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
-  const [statusFilter, setStatusFilter] = useState("All");
-  const [priorityFilter, setPriorityFilter] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredTestCases = testCases.filter((tc) => {
-    const statusMatch = statusFilter === "All" || tc.status === statusFilter;
-
-    const priorityMatch =
-      priorityFilter === "All" || tc.priority === priorityFilter;
-
-    const searchMatch = tc.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-
-    return statusMatch && priorityMatch && searchMatch;
-  });
+  const filteredTestCases = useMemo(() => {
+    return testCases
+      .filter((tc) =>
+        selectedStatus === "ALL" ? true : tc.status === selectedStatus,
+      )
+      .filter((tc) => tc.title.toLowerCase().includes(search.toLowerCase()));
+  }, [testCases, selectedStatus, search]);
 
   return (
     <div>
-      <h2>All Test Cases</h2>
+      <h2>Home</h2>
 
-      {/* SEARCH */}
-      <div style={{ marginBottom: "20px" }}>
-        <label>Search: </label>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search by title..."
-        />
-      </div>
+      <input
+        type="text"
+        placeholder="Search by title..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ marginRight: "10px", padding: "5px" }}
+      />
 
-      {/* FILTERS */}
-      <div style={{ marginBottom: "20px" }}>
-        <label>Status: </label>
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="All">All</option>
-          <option value="Not Run">Not Run</option>
-          <option value="Passed">Passed</option>
-          <option value="Failed">Failed</option>
-          <option value="Blocked">Blocked</option>
-        </select>
+      <select
+        value={filterStatus}
+        onChange={(e) => setFilterStatus(e.target.value)}
+        style={{ padding: "5px" }}
+      >
+        <option value="all">All</option>
+        <option value={TEST_CASE_STATUS.PASSED}>Passed</option>
+        <option value={TEST_CASE_STATUS.FAILED}>Failed</option>
+        <option value={TEST_CASE_STATUS.BLOCKED}>Blocked</option>
+      </select>
 
-        <label style={{ marginLeft: "20px" }}>Priority: </label>
-        <select
-          value={priorityFilter}
-          onChange={(e) => setPriorityFilter(e.target.value)}
-        >
-          <option value="All">All</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-      </div>
-
-      {filteredTestCases.length === 0 ? (
-        <p>No matching test cases.</p>
-      ) : (
-        filteredTestCases.map((tc) => (
-          <TestCaseCard
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {filteredCases.map((tc) => (
+          <li
             key={tc.id}
-            testCase={tc}
-            onUpdateStatus={updateStatus}
-            onDelete={deleteTestCase}
-          />
-        ))
-      )}
+            style={{
+              margin: "10px 0",
+              padding: "10px",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span>
+              <strong>{tc.title}</strong>{" "}
+              <span
+                style={{
+                  color: "white",
+                  backgroundColor: STATUS_COLORS[tc.status],
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  textTransform: "capitalize",
+                  fontSize: "0.85em",
+                  marginLeft: "10px",
+                }}
+              >
+                {tc.status}
+              </span>
+            </span>
+            <span>
+              <button
+                onClick={() =>
+                  updateTestCase(tc.id, { status: TEST_CASE_STATUS.PASSED })
+                }
+                style={{ marginRight: "5px" }}
+              >
+                ✅
+              </button>
+              <button
+                onClick={() =>
+                  updateTestCase(tc.id, { status: TEST_CASE_STATUS.FAILED })
+                }
+                style={{ marginRight: "5px" }}
+              >
+                ❌
+              </button>
+              <button
+                onClick={() =>
+                  updateTestCase(tc.id, { status: TEST_CASE_STATUS.BLOCKED })
+                }
+                style={{ marginRight: "5px" }}
+              >
+                ⏸️
+              </button>
+              <button onClick={() => deleteTestCase(tc.id)}>🗑️</button>
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

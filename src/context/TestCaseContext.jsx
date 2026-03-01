@@ -1,45 +1,24 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext } from "react";
+import { useTestCases } from "../hooks/useTestCases";
 
 const TestCaseContext = createContext();
 
 export function TestCaseProvider({ children }) {
-  const [testCases, setTestCases] = useState(() => {
-    const saved = localStorage.getItem("testCases");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  useEffect(() => {
-    localStorage.setItem("testCases", JSON.stringify(testCases));
-  }, [testCases]);
-
-  const addTestCase = (newTestCase) => {
-    setTestCases((prev) => [...prev, newTestCase]);
-  };
-
-  const updateStatus = (id, newStatus) => {
-    setTestCases((prev) =>
-      prev.map((tc) => (tc.id === id ? { ...tc, status: newStatus } : tc)),
-    );
-  };
-
-  const deleteTestCase = (id) => {
-    setTestCases((prev) => prev.filter((tc) => tc.id !== id));
-  };
+  const testCaseData = useTestCases();
 
   return (
-    <TestCaseContext.Provider
-      value={{
-        testCases,
-        addTestCase,
-        updateStatus,
-        deleteTestCase,
-      }}
-    >
+    <TestCaseContext.Provider value={testCaseData}>
       {children}
     </TestCaseContext.Provider>
   );
 }
 
-export function useTestCases() {
-  return useContext(TestCaseContext);
+export function useTestCaseContext() {
+  const context = useContext(TestCaseContext);
+  if (!context) {
+    throw new Error(
+      "useTestCaseContext must be used within a TestCaseProvider",
+    );
+  }
+  return context;
 }
