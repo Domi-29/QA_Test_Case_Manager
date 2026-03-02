@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTestCaseContext } from "../context/TestCaseContext";
-import { TEST_CASE_STATUS } from "../utils/constants";
+import { TEST_CASE_STATUS, STATUS_COLORS } from "../constants/status";
 
 function AddTestCase() {
   const { addTestCase } = useTestCaseContext();

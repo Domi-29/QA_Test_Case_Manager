@@ -1,30 +1,19 @@
-// TestCaseCard.jsx
 import React from "react";
-import { STATUS_COLORS } from "../utils/constants";
+import StatusBadge from "./StatusBadge";
 
-// Memoizujeme komponent, aby sa rerenderovala len ak sa zmení testCase
 const TestCaseCard = React.memo(({ testCase }) => {
   return (
     <div style={cardStyle}>
       <div style={headerStyle}>
         <h3 style={titleStyle}>{testCase.title}</h3>
-        <span
-          style={{
-            ...statusBadgeStyle,
-            backgroundColor: STATUS_COLORS[testCase.status],
-          }}
-        >
-          {testCase.status}
-        </span>
+        <StatusBadge status={testCase.status} />
       </div>
+
       <p style={descriptionStyle}>{testCase.description || "No description"}</p>
     </div>
   );
 });
 
-// -----------------------------
-// Styles (clean, chapel style)
-// -----------------------------
 const cardStyle = {
   padding: "12px 16px",
   margin: "8px 0",
@@ -47,14 +36,6 @@ const titleStyle = {
   fontSize: "1.1rem",
   color: "#333",
   fontWeight: "600",
-};
-
-const statusBadgeStyle = {
-  color: "white",
-  padding: "4px 10px",
-  borderRadius: "999px",
-  fontSize: "0.85rem",
-  textTransform: "capitalize",
 };
 
 const descriptionStyle = {
