@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTestCaseContext } from "../context/TestCaseContext";
-import { TEST_CASE_STATUS } from "../constants/status";
+import { TEST_CASE_STATUS, STATUS_STYLES } from "../constants/status";
 import TestCaseCard from "../components/TestCaseCard";
 
 function Home() {
@@ -20,6 +20,7 @@ function Home() {
     <div>
       <h2>Home</h2>
 
+      {/* Search + Filter */}
       <input
         type="text"
         placeholder="Search by title..."
@@ -39,9 +40,14 @@ function Home() {
         <option value={TEST_CASE_STATUS.BLOCKED}>Blocked</option>
       </select>
 
+      {/* Test Cases */}
       <div style={{ marginTop: "20px" }}>
         {filteredTestCases.map((tc) => (
-          <TestCaseCard key={tc.id} testCase={tc} />
+          <TestCaseCard
+            key={tc.id}
+            testCase={tc}
+            style={{ ...STATUS_STYLES[tc.status] }} // pridanie farby podľa statusu
+          />
         ))}
       </div>
     </div>

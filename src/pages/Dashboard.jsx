@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useTestCaseContext } from "../context/TestCaseContext";
-import { TEST_CASE_STATUS } from "../constants/status";
+import { TEST_CASE_STATUS, STATUS_STYLES } from "../constants/status";
 import TestCaseCard from "../components/TestCaseCard";
 import StatusBadge from "../components/StatusBadge";
 
@@ -9,6 +9,7 @@ function Dashboard() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
 
+  // Filter + search
   const filteredCases = useMemo(() => {
     return testCases.filter(
       (tc) =>
@@ -17,6 +18,7 @@ function Dashboard() {
     );
   }, [testCases, filterStatus, search]);
 
+  // Stats pre každý status
   const stats = useMemo(() => {
     return filteredCases.reduce((acc, tc) => {
       acc[tc.status] = (acc[tc.status] || 0) + 1;
@@ -51,14 +53,21 @@ function Dashboard() {
 
       <div style={{ marginTop: "16px" }}>
         {filteredCases.map((tc) => (
-          <TestCaseCard key={tc.id} testCase={tc} />
+          <TestCaseCard
+            key={tc.id}
+            testCase={tc}
+            // pridávame štýl podľa statusu
+            style={{ ...STATUS_STYLES[tc.status] }}
+          />
         ))}
       </div>
 
       <ul style={{ listStyle: "none", padding: 0, marginTop: "16px" }}>
         {Object.values(TEST_CASE_STATUS).map((status) => (
           <li key={status} style={{ margin: "4px 0", fontSize: "1.05em" }}>
-            <StatusBadge status={status} />: {stats[status] || 0}
+            {/* StatusBadge môže zostať, pridávame len štýl */}
+            <StatusBadge status={status} style={STATUS_STYLES[status]} />:{" "}
+            {stats[status] || 0}
           </li>
         ))}
       </ul>

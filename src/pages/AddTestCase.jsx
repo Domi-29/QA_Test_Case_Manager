@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTestCaseContext } from "../context/TestCaseContext";
-import { TEST_CASE_STATUS, STATUS_COLORS } from "../constants/status";
+import { TEST_CASE_STATUS } from "../constants/status";
 
 function AddTestCase() {
   const { addTestCase } = useTestCaseContext();
@@ -11,8 +11,17 @@ function AddTestCase() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!title) return;
-    addTestCase({ id: Date.now(), title, status: TEST_CASE_STATUS.BLOCKED });
-    navigate("/");
+
+    // Pridáme nový test case s default statusom BLOCKED
+    const newTestCase = {
+      id: Date.now(),
+      title,
+      status: TEST_CASE_STATUS.BLOCKED, // default status
+    };
+
+    addTestCase(newTestCase);
+    setTitle(""); // vyčistíme input
+    navigate("/"); // presmerovanie späť na Home/Dashboard
   };
 
   return (
@@ -24,8 +33,11 @@ function AddTestCase() {
           placeholder="Test case title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          style={{ padding: "5px", marginRight: "10px" }}
         />
-        <button type="submit">Add</button>
+        <button type="submit" style={{ padding: "5px 10px" }}>
+          Add
+        </button>
       </form>
     </div>
   );
