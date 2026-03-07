@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTestCaseContext } from "../context/TestCaseContext";
-import TestCaseCard from "../components/TestCaseCard";
+import TestCaseCard from "../components/TestCaseCard.jsx";
 import AddTestCase from "./AddTestCase";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
 
