@@ -25,17 +25,24 @@ export default function Dashboard() {
     <div style={containerStyle}>
       <h2>Dashboard</h2>
 
-      {testCases.length === 0 && <p>No test cases yet.</p>}
+      {/* Empty state */}
+      {testCases.length === 0 && (
+        <div style={emptyStateStyle}>
+          <p>No test cases yet. Add your first test case!</p>
+        </div>
+      )}
 
       {/* Flex container pre stats + graf */}
       {testCases.length > 0 && (
         <div style={statsChartContainer}>
+          {/* Stats */}
           <div style={statsStyle}>
             <p>Passed: {passed}</p>
             <p>Failed: {failed}</p>
             <p>Blocked: {blocked}</p>
           </div>
 
+          {/* PieChart */}
           <PieChart width={250} height={250}>
             <Pie
               data={chartData}
@@ -56,14 +63,16 @@ export default function Dashboard() {
       )}
 
       {/* Test Case list */}
-      {testCases.map((tc) => (
-        <TestCaseCard
-          key={tc.id}
-          testCase={tc}
-          onEdit={setEditingTestCase}
-          showDelete
-        />
-      ))}
+      <div style={testCaseListContainer}>
+        {testCases.map((tc) => (
+          <TestCaseCard
+            key={tc.id}
+            testCase={tc}
+            onEdit={setEditingTestCase}
+            showDelete
+          />
+        ))}
+      </div>
 
       {/* Edit wrapper */}
       {editingTestCase && (
@@ -87,10 +96,11 @@ const containerStyle = {
 
 const editWrapperStyle = {
   marginTop: "30px",
-  padding: "20px",
+  padding: "25px",
   borderRadius: "16px",
   backgroundColor: "#f9fafb",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+  boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+  transition: "all 0.3s ease",
 };
 
 // flex container pre stats + graf
@@ -102,6 +112,27 @@ const statsChartContainer = {
   padding: "20px",
   borderRadius: "16px",
   backgroundColor: "#f0f4f8",
+  flexWrap: "wrap",
+  gap: "20px",
+};
+
+// test case list container
+const testCaseListContainer = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "20px",
+};
+
+// empty state
+const emptyStateStyle = {
+  padding: "40px",
+  textAlign: "center",
+  color: "#555",
+  fontStyle: "italic",
+  fontSize: "16px",
+  backgroundColor: "#f9fafb",
+  borderRadius: "16px",
+  marginBottom: "20px",
 };
 
 // stats box
