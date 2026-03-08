@@ -10,6 +10,16 @@ export default function TestCaseCard({ testCase, onEdit, showDelete = false }) {
     color: "#fff",
   };
 
+  const handleDelete = () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this test case?",
+    );
+
+    if (confirmDelete) {
+      deleteTestCase(testCase.id);
+    }
+  };
+
   return (
     <div
       style={{
@@ -34,10 +44,7 @@ export default function TestCaseCard({ testCase, onEdit, showDelete = false }) {
         )}
 
         {showDelete && (
-          <button
-            style={deleteButtonStyle}
-            onClick={() => deleteTestCase(testCase.id)}
-          >
+          <button style={deleteButtonStyle} onClick={handleDelete}>
             Delete
           </button>
         )}
