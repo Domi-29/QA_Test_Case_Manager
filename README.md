@@ -15,6 +15,8 @@ Tech Stack
 - Context API
 - Recharts
 
+Link 
+https://portfolio-1-qa-test-manager.vercel.app/dashboard
 
 Author
 Dominika Pitoňáková
